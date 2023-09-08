@@ -1,0 +1,25 @@
+https://fliedcat.tistory.com/113
+
+shell> vi /usr/lib/systemd/system/docker.service
+
+ - ExecStart로 시작하는 라인 끝에 --data-root=/docker/root/dir 추가
+
+[Service]
+Type=notify
+# the default is not to use systemd for cgroups because the delegate issues still
+# exists and systemd currently does not support the cgroup feature set required
+# for containers run by docker
+ExecStart=/usr/bin/dockerd -H fd:// --containerd=/run/containerd/containerd.sock --data-root=/home/docker
+ExecReload=/bin/kill -s HUP $MAINPID
+TimeoutSec=0
+RestartSec=2
+Restart=always
+
+#
+3. Docker Root 디렉토리의 데이타  복사 또는 이동 및 Docker 서비스 재시작
+
+shell> systemctl daemon-reload 
+shell> systemctl stop docker
+shell> mkdir /home/docker2
+shell> cp -rp /var/lib/docker /home/    => 파일 복사
+shell> systemctl start docker
