@@ -1,0 +1,35 @@
+** kubernetes repo 설정
+
+cat <<EOF > /etc/yum.repos.d/kubernetes.repo
+[kubernetes]
+name=Kubernetes
+baseurl=https://packages.cloud.google.com/yum/repos/kubernetes-el7-x86_64
+enabled=1
+gpgcheck=0
+EOF
+
+** kubernetes 설치
+
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum install -y kubelet kubeadm kubectl --disableexcludes=kubernetes
+systemctl enable --now kubelet
+
+
+
+** kubelet 실행
+
+vi /etc/containerd/config.toml
+
+disabled_plugins에서 CRI를 삭제한다.
+
+disabled_plugins = [""]
+containerd를 재시작한다.
+
+systemctl restart containerd
+ 
+
+kubelet을 실행한다.
+
+systemctl enable --now kubelet
+
+

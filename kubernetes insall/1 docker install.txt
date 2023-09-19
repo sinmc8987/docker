@@ -1,0 +1,55 @@
+
+1. 이전 버전 또는 기존 docker 삭제하기
+
+yum list installed | grep docker 
+
+yum remove (grep 결과 나온 docker 관련 package 명)
+
+2. 저장소 설정
+
+새 호스트 시스템에 처음으로 Docker Engine을 설치하기 전에 Docker 저장소를 설정해야 합니다.
+
+유틸리티 yum-utils를 제공 하는 패키지를 설치하고 안정적인 저장소를 yum-config-manager설정 합니다.
+
+yum -y update
+yum install -y yum-utils device-mapper-persistent-data lvm2
+yum-config-manager --add-repo \ https://download.docker.com/linux/centos/docker-ce.repo
+yum-config-manager --enable docker-ce-nightly
+
+3. 도커 엔진 설치
+설치 최신 버전 도커 엔진 및 container 데몬을, 또는 특정 버전을 설치하려면 다음 단계로 이동합니다
+특정 버전 의 Docker Engine 을 설치하려면 리포지토리에 사용 가능한 버전을 나열한 다음 다음을 선택하여 설치합니다.
+yum install docker-ce docker-ce-cli containerd.io -y
+yum list docker-ce --showduplicates | sort -r
+
+yum install docker-ce-<VERSION_STRING> docker-ce-cli-<VERSION_STRING> containerd.io
+
+3-1 cgroup driver 변경
+kubelet과 Docker는 cgroupfs를 사용하고 나머지 프로세스는 systemd를 사용하도록 노드가 설정된 경우, 시스템 리소스 부족 현상이 발생할 수 있으므로 리눅스 init 시스템이 사용하는 cgroups 드라이버와 docker, kubelet의 드라이버를 맞춰준다.
+
+mkdir /etc/docker
+
+cat << EOF > /etc/docker/daemon.json
+{
+  "exec-opts": ["native.cgroupdriver=systemd"]
+}
+EOF
+ 
+
+3-2 docker 실행하고 cgroup 확인
+systemctl daemon-reload
+systemctl start docker
+systemctl enable --now docker
+
+[root@hdm2 yum.repos.d]# docker info | grep Cgroup
+ Cgroup Driver: systemd
+ Cgroup Version: 1
+ 
+
+기존 도커 설치되어 이전 버전 삭제한 경우
+- 호스트의 이미지, 컨테이너, 볼륨 또는 사용자 지정 구성 파일은 자동으로 제거되지 않습니다. 모든 이미지, 컨테이너 및 볼륨을 삭제하려면
+rm -rf /var/lib/docker
+rm -rf /var/lib/containerd
+
+5. 도커 계정 추가
+usermod -a -G docker sinmc
