@@ -1,0 +1,37 @@
+
+1. 이전 버전 또는 기존 docker 삭제하기
+
+yum list installed | grep docker 
+
+yum remove (grep 결과 나온 docker 관련 package 명)
+
+2. 저장소 설정
+
+새 호스트 시스템에 처음으로 Docker Engine을 설치하기 전에 Docker 저장소를 설정해야 합니다.
+
+유틸리티 yum-utils를 제공 하는 패키지를 설치하고 안정적인 저장소를 yum-config-manager설정 합니다.
+
+yum -y update
+yum install -y yum-utils
+yum-config-manager --add-repo \ https://download.docker.com/linux/centos/docker-ce.repo
+yum-config-manager --enable docker-ce-nightly
+
+3. 도커 엔진 설치
+설치 최신 버전 도커 엔진 및 container 데몬을, 또는 특정 버전을 설치하려면 다음 단계로 이동합니다
+특정 버전 의 Docker Engine 을 설치하려면 리포지토리에 사용 가능한 버전을 나열한 다음 다음을 선택하여 설치합니다.
+yum install docker-ce docker-ce-cli containerd.io -y
+yum list docker-ce --showduplicates | sort -r
+
+yum install docker-ce-<VERSION_STRING> docker-ce-cli-<VERSION_STRING> containerd.io
+
+4. 도커 실행 및 활성화
+systemctl start docker
+systemctl enable docker
+
+기존 도커 설치되어 이전 버전 삭제한 경우
+- 호스트의 이미지, 컨테이너, 볼륨 또는 사용자 지정 구성 파일은 자동으로 제거되지 않습니다. 모든 이미지, 컨테이너 및 볼륨을 삭제하려면
+rm -rf /var/lib/docker
+rm -rf /var/lib/containerd
+
+5. 도커 계정 추가
+usermod -a -G docker sinmc

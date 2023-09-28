@@ -1,0 +1,11 @@
+registry push할 때 보내는 서버에 설정
+/etc/docker/daemon.json
+{
+
+    "insecure-registries": ["192.168.0.101:5000"]
+              # registry 서버 IP:5000
+}
+
+
+registry 이미지 저장 경로
+/data/docker/volumes/d10829919329731cc89ca93987492e957d94128a5c2426dc935e6b1318bca714/_data/docker/registry/v2/repositories
