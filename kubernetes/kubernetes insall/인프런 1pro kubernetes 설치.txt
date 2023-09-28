@@ -1,0 +1,1 @@
+https://kubetm.github.io/k8s/02-beginner/cluster-install-case6/

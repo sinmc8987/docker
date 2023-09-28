@@ -1,0 +1,11 @@
+shutdown now로 master 종료
+
+Master를 복사하기 위해서는 먼저 Master가 꺼져 있어야 함
+
+이후 VirtualBox Master 마우스 오른쪽 클릭 → [복제] 버튼 클릭
+
+이름 : k8s-node1(원하는 Node이름으로 설정하면 됨)
+MAC 주소 정책 : 모든 네트워크 어댑터의 새 MAC 주소 생성
+복제 방식 : 완전한 복제
+
+복제한 각 노드에 가서 /etc/sysconfig/network-script/ifcfg-eth0에 IP 변경

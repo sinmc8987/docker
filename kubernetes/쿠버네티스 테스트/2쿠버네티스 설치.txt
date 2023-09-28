@@ -1,0 +1,170 @@
+[root@localhost system]# yum install -y --disableexcludes=kubernetes kubadm kubctl kubelet   # 뒤에 버전 붙이니 kubeadm, kubectl 설치 안됨
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: mirror.kakao.com
+ * extras: mirror.kakao.com
+ * updates: mirror.kakao.com
+base                                                                                         | 3.6 kB  00:00:00     
+docker-ce-stable                                                                             | 3.5 kB  00:00:00     
+extras                                                                                       | 2.9 kB  00:00:00     
+kubernetes                                                                                   | 1.4 kB  00:00:00     
+updates                                                                                      | 2.9 kB  00:00:00     
+No package kubadm-1.15.5-0.x86_64 available.
+No package kubctl-1.15.5-0.x86_64 available.
+Resolving Dependencies
+--> Running transaction check
+---> Package kubelet.x86_64 0:1.15.5-0 will be installed
+--> Processing Dependency: kubernetes-cni >= 0.7.5 for package: kubelet-1.15.5-0.x86_64
+--> Processing Dependency: socat for package: kubelet-1.15.5-0.x86_64
+--> Processing Dependency: conntrack for package: kubelet-1.15.5-0.x86_64
+--> Running transaction check
+---> Package conntrack-tools.x86_64 0:1.4.4-7.el7 will be installed
+--> Processing Dependency: libnetfilter_cttimeout.so.1(LIBNETFILTER_CTTIMEOUT_1.1)(64bit) for package: conntrack-tools-1.4.4-7.el7.x86_64
+--> Processing Dependency: libnetfilter_cttimeout.so.1(LIBNETFILTER_CTTIMEOUT_1.0)(64bit) for package: conntrack-tools-1.4.4-7.el7.x86_64
+--> Processing Dependency: libnetfilter_cthelper.so.0(LIBNETFILTER_CTHELPER_1.0)(64bit) for package: conntrack-tools-1.4.4-7.el7.x86_64
+--> Processing Dependency: libnetfilter_queue.so.1()(64bit) for package: conntrack-tools-1.4.4-7.el7.x86_64
+--> Processing Dependency: libnetfilter_cttimeout.so.1()(64bit) for package: conntrack-tools-1.4.4-7.el7.x86_64
+--> Processing Dependency: libnetfilter_cthelper.so.0()(64bit) for package: conntrack-tools-1.4.4-7.el7.x86_64
+---> Package kubernetes-cni.x86_64 0:1.2.0-0 will be installed
+---> Package socat.x86_64 0:1.7.3.2-2.el7 will be installed
+--> Running transaction check
+---> Package libnetfilter_cthelper.x86_64 0:1.0.0-11.el7 will be installed
+---> Package libnetfilter_cttimeout.x86_64 0:1.0.0-7.el7 will be installed
+---> Package libnetfilter_queue.x86_64 0:1.0.2-2.el7_2 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+====================================================================================================================
+ Package                             Arch                Version                      Repository               Size
+====================================================================================================================
+Installing:
+ kubelet                             x86_64              1.15.5-0                     kubernetes               22 M
+Installing for dependencies:
+ conntrack-tools                     x86_64              1.4.4-7.el7                  base                    187 k
+ kubernetes-cni                      x86_64              1.2.0-0                      kubernetes               17 M
+ libnetfilter_cthelper               x86_64              1.0.0-11.el7                 base                     18 k
+ libnetfilter_cttimeout              x86_64              1.0.0-7.el7                  base                     18 k
+ libnetfilter_queue                  x86_64              1.0.2-2.el7_2                base                     23 k
+ socat                               x86_64              1.7.3.2-2.el7                base                    290 k
+
+Transaction Summary
+====================================================================================================================
+Install  1 Package (+6 Dependent packages)
+
+Total download size: 39 M
+Installed size: 165 M
+Downloading packages:
+(1/7): conntrack-tools-1.4.4-7.el7.x86_64.rpm                                                | 187 kB  00:00:00     
+(2/7): libnetfilter_cthelper-1.0.0-11.el7.x86_64.rpm                                         |  18 kB  00:00:00     
+(3/7): libnetfilter_cttimeout-1.0.0-7.el7.x86_64.rpm                                         |  18 kB  00:00:00     
+(4/7): libnetfilter_queue-1.0.2-2.el7_2.x86_64.rpm                                           |  23 kB  00:00:00     
+(5/7): socat-1.7.3.2-2.el7.x86_64.rpm                                                        | 290 kB  00:00:00     
+warning: /var/cache/yum/x86_64/7/kubernetes/packages/0f2a2afd740d476ad77c508847bad1f559afc2425816c1f2ce4432a62dfe0b9d-kubernetes-cni-1.2.0-0.x86_64.rpm: Header V4 RSA/SHA512 Signature, key ID 3e1ba8d5: NOKEY
+Public key for 0f2a2afd740d476ad77c508847bad1f559afc2425816c1f2ce4432a62dfe0b9d-kubernetes-cni-1.2.0-0.x86_64.rpm is not installed
+(6/7): 0f2a2afd740d476ad77c508847bad1f559afc2425816c1f2ce4432a62dfe0b9d-kubernetes-cni-1.2.0 |  17 MB  00:00:02     
+(7/7): 4e3e9edc797eed91c0d5ab63b3dd464e82d877e355cae5f35e8f31c9e203658a-kubelet-1.15.5-0.x86 |  22 MB  00:00:05     
+--------------------------------------------------------------------------------------------------------------------
+Total                                                                               6.9 MB/s |  39 MB  00:00:05     
+Retrieving key from https://packages.cloud.google.com/yum/doc/yum-key.gpg
+Importing GPG key 0x13EDEF05:
+ Userid     : "Rapture Automatic Signing Key (cloud-rapture-signing-key-2022-03-07-08_01_01.pub)"
+ Fingerprint: a362 b822 f6de dc65 2817 ea46 b53d c80d 13ed ef05
+ From       : https://packages.cloud.google.com/yum/doc/yum-key.gpg
+Retrieving key from https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+Importing GPG key 0x3E1BA8D5:
+ Userid     : "Google Cloud Packages RPM Signing Key <gc-team@google.com>"
+ Fingerprint: 3749 e1ba 95a8 6ce0 5454 6ed2 f09c 394c 3e1b a8d5
+ From       : https://packages.cloud.google.com/yum/doc/rpm-package-key.gpg
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : libnetfilter_cthelper-1.0.0-11.el7.x86_64                                                        1/7 
+  Installing : socat-1.7.3.2-2.el7.x86_64                                                                       2/7 
+  Installing : libnetfilter_cttimeout-1.0.0-7.el7.x86_64                                                        3/7 
+  Installing : libnetfilter_queue-1.0.2-2.el7_2.x86_64                                                          4/7 
+  Installing : conntrack-tools-1.4.4-7.el7.x86_64                                                               5/7 
+  Installing : kubernetes-cni-1.2.0-0.x86_64                                                                    6/7 
+  Installing : kubelet-1.15.5-0.x86_64                                                                          7/7 
+  Verifying  : kubelet-1.15.5-0.x86_64                                                                          1/7 
+  Verifying  : conntrack-tools-1.4.4-7.el7.x86_64                                                               2/7 
+  Verifying  : libnetfilter_queue-1.0.2-2.el7_2.x86_64                                                          3/7 
+  Verifying  : kubernetes-cni-1.2.0-0.x86_64                                                                    4/7 
+  Verifying  : libnetfilter_cttimeout-1.0.0-7.el7.x86_64                                                        5/7 
+  Verifying  : socat-1.7.3.2-2.el7.x86_64                                                                       6/7 
+  Verifying  : libnetfilter_cthelper-1.0.0-11.el7.x86_64                                                        7/7 
+
+Installed:
+  kubelet.x86_64 0:1.15.5-0                                                                                         
+
+Dependency Installed:
+  conntrack-tools.x86_64 0:1.4.4-7.el7                     kubernetes-cni.x86_64 0:1.2.0-0                         
+  libnetfilter_cthelper.x86_64 0:1.0.0-11.el7              libnetfilter_cttimeout.x86_64 0:1.0.0-7.el7             
+  libnetfilter_queue.x86_64 0:1.0.2-2.el7_2                socat.x86_64 0:1.7.3.2-2.el7                            
+
+Complete!
+
+
+## kubeadm 설치되지 않아 다음날 위와같이 실행 후 성공
+
+[root@localhost ~]# yum install -y kubeadm --disableexcludes=kubernetes
+Loaded plugins: fastestmirror, langpacks
+Loading mirror speeds from cached hostfile
+ * base: mirror.kakao.com
+ * extras: mirror.kakao.com
+ * updates: mirror.kakao.com
+base                                                                                                                                                          | 3.6 kB  00:00:00     
+docker-ce-stable                                                                                                                                              | 3.5 kB  00:00:00     
+extras                                                                                                                                                        | 2.9 kB  00:00:00     
+kubernetes/signature                                                                                                                                          |  454 B  00:00:00     
+kubernetes/signature                                                                                                                                          | 1.4 kB  00:00:00 !!! 
+updates                                                                                                                                                       | 2.9 kB  00:00:00     
+Resolving Dependencies
+--> Running transaction check
+---> Package kubeadm.x86_64 0:1.28.1-0 will be installed
+--> Processing Dependency: cri-tools >= 1.19.0 for package: kubeadm-1.28.1-0.x86_64
+--> Running transaction check
+---> Package cri-tools.x86_64 0:1.26.0-0 will be installed
+--> Finished Dependency Resolution
+
+Dependencies Resolved
+
+=====================================================================================================================================================================================
+ Package                                     Arch                                     Version                                     Repository                                    Size
+=====================================================================================================================================================================================
+Installing:
+ kubeadm                                     x86_64                                   1.28.1-0                                    kubernetes                                    11 M
+Installing for dependencies:
+ cri-tools                                   x86_64                                   1.26.0-0                                    kubernetes                                   8.6 M
+
+Transaction Summary
+=====================================================================================================================================================================================
+Install  1 Package (+1 Dependent package)
+
+Total download size: 20 M
+Installed size: 88 M
+Downloading packages:
+(1/2): 2e9cd5948c00117eb7bb23870ecc7c550c63bebe9d7e96c2879727a96f16d9f3-kubeadm-1.28.1-0.x86_64.rpm                                                           |  11 MB  00:00:02     
+(2/2): 3f5ba2b53701ac9102ea7c7ab2ca6616a8cd5966591a77577585fde1c434ef74-cri-tools-1.26.0-0.x86_64.rpm                                                         | 8.6 MB  00:00:02     
+-------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+Total                                                                                                                                                6.6 MB/s |  20 MB  00:00:02     
+Running transaction check
+Running transaction test
+Transaction test succeeded
+Running transaction
+  Installing : cri-tools-1.26.0-0.x86_64                                                                                                                                         1/2 
+  Installing : kubeadm-1.28.1-0.x86_64                                                                                                                                           2/2 
+  Verifying  : kubeadm-1.28.1-0.x86_64                                                                                                                                           1/2 
+  Verifying  : cri-tools-1.26.0-0.x86_64                                                                                                                                         2/2 
+
+Installed:
+  kubeadm.x86_64 0:1.28.1-0                                                                                                                                                          
+
+Dependency Installed:
+  cri-tools.x86_64 0:1.26.0-0                                                                                                                                                        
+
+Complete!
+[root@localhost ~]# kubeadm version -o short
+v1.28.1
+

@@ -1,0 +1,5 @@
+token이 만료된 경우 다시 join 하는 방법
+
+kubeadm reset 실행
+
+kubeadmin init

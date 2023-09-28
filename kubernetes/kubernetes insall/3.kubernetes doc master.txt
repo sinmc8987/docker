@@ -1,0 +1,115 @@
+16. k8s master 초기화
+master server에서만 다음 커맨드를 입력한다. (16~19 step은 master node에서만 실행한다.)
+
+Network Plugin은 --pod-network-cidr을 통해 설정할 수 있다.
+
+calico를 사용하기로함.
+
+calico 기반 :  kubeadm init --pod-network-cidr=192.168.0.0/16
+flannel 기반 : kubeadm init --pod-network-cidr=10.244.0.0/16
+ 
+
+weave-net을 쓸 예정이라면 그냥 init만 하면 된다.
+
+kubeadm init
+ 
+
+성공적으로 init되면 아래와 같은 메시지가 출력된다. k8s worker node와 join하기 위해 필요하므로 잘 저장해둬야한다.
+
+kubeadm join 172.30.1.144:6443 --token xk2apl.mu6nbpbdwxj2qyhv \
+        --discovery-token-ca-cert-hash sha256:05874fd671aeaa23548c420dbe74709239e9d94d981f8c2dca1f1f3c7d0fa25b
+ 
+
+★ 다른 버전의 k8s를 설치하고자 하는 경우
+1.25.6을 설치하고자 하는 경우는 아래와 같이 설치. 다른 버전의 경우 아래 링크에서 릴리즈를 확인 후 버전을 지정해 설치한다.
+
+https://kubernetes.io/ko/releases/
+
+wget https://dl.k8s.io/release/v1.25.6/bin/linux/amd64/kubectl -O kubectl --no-check-certificate
+wget https://dl.k8s.io/release/v1.25.6/bin/linux/amd64/kubeadm -O kubeadm --no-check-certificate 
+wget https://dl.k8s.io/release/v1.25.6/bin/linux/amd64/kubelet -O kubelet --no-check-certificate
+
+install kubectl /usr/bin/kubectl
+install kubeadm /usr/bin/kubeadm
+install kubelet /usr/bin/kubelet
+
+kubeadm init --pod-network-cidr=192.168.0.0/16 --kubernetes-version=1.25.6
+ 
+
+17. k8s를 운영할 유저를 생성하고 sudo user로 등록해준다.
+[root@hdm2 yum.repos.d]# adduser -m kube
+
+[root@hdm2 yum.repos.d]# passwd kube
+Changing password for user kube.
+New password:
+BAD PASSWORD: The password is shorter than 8 characters
+Retype new password:
+passwd: all authentication tokens updated successfully.
+
+[root@hdm2 yum.repos.d]# usermod -aG wheel kube
+ 
+
+18. kubectl을 실행하기 위한 환경변수를 설정한다.
+admin.conf 파일이 kubectl을 실행하고자 하는 user의 /home/.kube에 있어야 kubectl 커맨드를 사용할 수 있다.
+
+mkdir -p $HOME/.kube
+cp -i /etc/kubernetes/admin.conf $HOME/.kube/config
+chown $(id -u):$(id -g) $HOME/.kube/config
+
+[root@hdm2 home]# kubectl get nodes
+NAME                STATUS     ROLES                  AGE   VERSION
+hdm2.cdp.louis.io   NotReady   control-plane,master   35m   v1.23.5
+ 
+
+kube user의 경우 conf 파일을 복사하지 않았기 때문에 아래와 같은 에러가 발생한다.
+
+위와 conf file을 kube user의 /home/.kube 밑에 복사해주면 정상적으로 kubectl 명령을 실행할 수 있다.
+
+[kube@hdm2 home]$ kubectl get nodes
+error: the server doesn't have a resource type "nodes"
+ 
+
+19. Network Plugin(CNI) 설정
+k8s master에서만 실행한다.
+
+kubectl get nodes 커맨드를 입력하면 아래와 같이 status가 NotReady로 나오는 것을 볼 수 있다.
+
+이는 POD 사이의 통신을 지원하는 CNI가 설정되어있지 않기 때문이다.
+
+[kube@hdm2 home]$ kubectl get nodes
+NAME                STATUS     ROLES                  AGE   VERSION
+hdm2.cdp.louis.io   NotReady   control-plane,master   40m   v1.23.5
+ 
+
+아래 링크를 참고해 CALICO CNI를 설정함
+
+https://projectcalico.docs.tigera.io/getting-started/kubernetes/quickstart
+
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/tigera-operator.yaml
+kubectl create -f https://raw.githubusercontent.com/projectcalico/calico/v3.26.1/manifests/custom-resources.yaml
+
+[root@km ~]# watch kubectl get pods -n calico-system
+NAME                                       READY   STATUS    RESTARTS   AGE
+calico-kube-controllers-67f85d7449-gmc9h   1/1     Running   0          2m3s
+calico-node-wd5wh                          1/1     Running   0          2m3s
+calico-typha-7ddcb55499-b2pdx              1/1     Running   0          2m3s
+ 
+
+아래 링크를 참고해 WEAVENET CNI를 설정함
+
+https://www.weave.works/docs/net/latest/kubernetes/kube-addon/
+
+kubectl apply -f https://github.com/weaveworks/weave/releases/download/v2.8.1/weave-daemonset-k8s.yaml
+serviceaccount/weave-net created
+clusterrole.rbac.authorization.k8s.io/weave-net created
+clusterrolebinding.rbac.authorization.k8s.io/weave-net created
+role.rbac.authorization.k8s.io/weave-net created
+rolebinding.rbac.authorization.k8s.io/weave-net created
+daemonset.apps/weave-net created
+ 
+
+CNI 설정 후 node의 status가 Ready로 변경되었다.
+
+[kube@hdm2 root]$ kubectl get nodes
+NAME                STATUS   ROLES                  AGE   VERSION
+hdm2.cdp.louis.io   Ready    control-plane,master   65m   v1.23.5
